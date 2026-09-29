@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   BizeLinks design tokens. Every colour, font and radius used in the product
+   comes from here — change a value once and it changes everywhere.
+   ========================================================================= */
+@theme {
+  /* Colour */
+  --color-canvas: #FAF8F5;      /* page background (warm off-white) */
+  --color-surface: #FFFFFF;     /* cards, inputs */
+  --color-sunken: #F2EFEA;      /* quiet fills, code, disabled */
+  --color-ink: #16181D;         /* primary text */
+  --color-ink-muted: #5A5E68;   /* secondary text — 6.1:1 on canvas */
+  --color-line: #E4E0D8;        /* hairlines and borders */
+  --color-line-strong: #CFC9BE; /* input borders */
+  --color-ember: #C8421A;       /* primary action — white text 4.9:1 */
+  --color-ember-deep: #A33614;  /* primary hover/pressed */
+  --color-ember-wash: #FBEAE3;  /* subtle ember tint */
+  --color-teal: #0F4C5C;        /* secondary brand colour */
+  --color-teal-wash: #E3EFF1;
+  --color-success: #1F7A4D;
+  --color-success-wash: #E4F3EB;
+  --color-danger: #B42318;
+  --color-danger-wash: #FDECEA;
+
+  /* Type */
+  --font-display: var(--font-newsreader), ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Scale: 1.25 ratio from 16px */
+  --text-xs: 0.8rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+  --text-4xl: 3.052rem;
+  --text-5xl: 3.815rem;
+
+  /* Radius by hierarchy — bigger things get softer corners */
+  --radius-row: 10px;      /* link rows, inputs */
+  --radius-card: 16px;     /* featured cards */
+  --radius-spotlight: 24px;/* the spotlight */
+  --radius-pill: 999px;    /* buttons, chips */
+
+  --shadow-lift: 0 1px 2px rgb(22 24 29 / 0.06), 0 8px 24px -12px rgb(22 24 29 / 0.18);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.55;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  :focus-visible {
+    outline: 3px solid var(--color-teal);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  ::selection { background: var(--color-ember-wash); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 44px; padding: 0 1.25rem;
+    border-radius: var(--radius-pill);
+    font-weight: 600; font-size: var(--text-sm);
+    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    cursor: pointer; white-space: nowrap;
+  }
+  .btn:disabled, .btn[aria-disabled='true'] { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--color-ember); color: #fff; }
+  .btn-primary:hover { background: var(--color-ember-deep); }
+  .btn-secondary { background: var(--color-surface); color: var(--color-ink); border: 1px solid var(--color-line-strong); }
+  .btn-secondary:hover { border-color: var(--color-ink); }
+  .btn-quiet { color: var(--color-ink); padding: 0 0.75rem; }
+  .btn-quiet:hover { background: var(--color-sunken); }
+  .btn-danger { background: var(--color-surface); color: var(--color-danger); border: 1px solid currentColor; }
+
+  .field-label { display: block; font-size: var(--text-sm); font-weight: 600; margin-bottom: 0.375rem; }
+  .field-hint { font-size: var(--text-sm); color: var(--color-ink-muted); margin-top: 0.375rem; }
+  .field-error { font-size: var(--text-sm); color: var(--color-danger); margin-top: 0.375rem; }
+  .input {
+    width: 100%; min-height: 44px; padding: 0.625rem 0.875rem;
+    background: var(--color-surface); color: var(--color-ink);
+    border: 1px solid var(--color-line-strong); border-radius: var(--radius-row);
+    font-size: 1rem; /* 16px stops iOS zooming into fields */
+  }
+  .input::placeholder { color: #6E727B; }
+  .input:hover { border-color: var(--color-ink-muted); }
+  .input:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 1px; border-color: var(--color-teal); }
+  .input[aria-invalid='true'] { border-color: var(--color-danger); }
+
+  .notice { border-radius: var(--radius-row); padding: 0.875rem 1rem; font-size: var(--text-sm); border: 1px solid; }
+  .notice-info { background: var(--color-teal-wash); border-color: #BFD8DC; color: var(--color-teal); }
+  .notice-success { background: var(--color-success-wash); border-color: #BCE0CC; color: var(--color-success); }
+  .notice-error { background: var(--color-danger-wash); border-color: #F5C2BD; color: var(--color-danger); }
+
+  .shell { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
+  @media (min-width: 768px) { .shell { padding-inline: 2rem; } }
+}
