@@ -1,19 +1,22 @@
 # BizeLinks
 
-**Your links. Your brand. One page.** — a global link-in-bio platform by Risten Global Ltd.
+**Your business. One smart link.** A global link-in-bio platform by Risten Global Ltd.
 Live address (once deployed): https://bizelinks.com
 
 BizeLinks is a **separate product from LinkDesk**. Nothing here shares code, accounts or roadmap with it.
 
-## Status: Phase 1 (Foundation)
+## Status: Phase 2 (Public pages)
 
 | Built and tested | Not built yet |
 |---|---|
-| Design system, home page, not-found page | Public user pages (Phase 2) |
-| Database + security rules (41 automated checks) | Marketing site sections (Phase 2) |
-| Passwordless email sign-in (code written, not yet tried against a real Supabase project) | Profile/link editor, publish (Phase 3) |
-| Cloudflare Workers build (runs locally) | Analytics dashboard, hardening (Phase 4) |
-| Image-storage rules (2 MB, no SVG) | Legal pages, launch checklist (Phase 5) |
+| Public pages at bizelinks.com/{username}: profile, socials, Spotlight (3), products, links | Profile/link editor, onboarding, publish button (Phase 3) |
+| Four themes with automatic contrast protection | Analytics dashboard, click counting, rate limits, bot check (Phase 4) |
+| Share panel, copy link, downloadable QR code (SVG) | Security headers policy (CSP), legal pages, launch checklist (Phase 5) |
+| Search and share previews, opt-out of search engines, sitemap | Custom domains, payments, AI suggestions (after launch) |
+| Example page at /example; home page with live preview | |
+| Report-a-page form | |
+| Database + security rules (59 automated checks); 80 unit tests | |
+| Passwordless sign-in (code written, not yet tried against a real Supabase project) | |
 
 ## Stack (in plain English)
 
@@ -30,6 +33,11 @@ BizeLinks is a **separate product from LinkDesk**. Nothing here shares code, acc
 3. Copy `.env.example` to `.env.local` and fill in the three values (see `docs/SUPABASE-SETUP.md`).
 4. Run `npm run dev` and open http://localhost:3000.
 
+## Database updates
+
+Run the files in `supabase/migrations` **in order** in the Supabase SQL editor. Phase 2 adds
+`20261002000003_public_pages.sql`. Run it once, after migrations 1 and 2.
+
 ## Checks (run before every push)
 
 `npm run check` runs lint, type check, unit tests and a production build.
@@ -39,4 +47,5 @@ BizeLinks is a **separate product from LinkDesk**. Nothing here shares code, acc
 
 - `src/app` — pages and routes · `src/components` — shared UI · `src/lib` — rules, validation, Supabase helpers
 - `supabase/migrations` — the database, in order · `supabase/tests` — database security tests
+- `src/components/public` — the public page building blocks
 - `docs` — setup guides and recorded decisions
