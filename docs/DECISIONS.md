@@ -12,3 +12,9 @@
 | D-08 | SVG uploads banned | SVG files can carry scripts. |
 | D-09 | Released usernames held 30 days; max 3 changes per 30 days | Stops name-squatting and impersonation. |
 | D-10 | Fonts bundled locally (Newsreader, Instrument Sans; SIL OFL) | No third-party requests; no layout shift. |
+| D-11 | Spotlight holds up to 3 items; "featured" zone becomes "products" (up to 12) | Owner approved master prompt v2, 2 Oct 2026. The first Spotlight item is the only solid block of accent on a page. |
+| D-12 | Prices are free text the owner types (e.g. "£9.99", "From $40") | Global product: no currency assumptions, no payments in the MVP. |
+| D-13 | Social links shown as labelled text chips, no brand logos | Readable, accessible, and new platforms need no artwork. |
+| D-14 | Public pages render fresh on every visit for now | Edits appear instantly. Cached pages with refresh-on-publish come once the editor exists. |
+| D-15 | Themes stay Paper, Studio, Ink, Lagoon | They cover the master prompt's four roles: Studio = minimal, Ink = midnight, Paper = creator (house style), Lagoon = business. |
+| D-16 | Brand name and tagline live only in src/lib/brand.ts | Casing kept as "BizeLinks"; tagline "Your business. One smart link." Change once, changes everywhere. |

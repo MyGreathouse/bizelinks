@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from 'next'
 import { instrument, newsreader } from './fonts'
+import { BRAND } from '@/lib/brand'
 import { siteUrl } from '@/lib/env'
 import './globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
-  title: { default: 'BizeLinks — Your links. Your brand. One page.', template: '%s · BizeLinks' },
-  description:
-    'Bring your content, products, services and favourite destinations together in one polished page you can share anywhere.',
-  applicationName: 'BizeLinks',
-  openGraph: { siteName: 'BizeLinks', type: 'website' },
+  title: { default: `${BRAND.name}: ${BRAND.tagline}`, template: `%s | ${BRAND.name}` },
+  description: BRAND.summary,
+  applicationName: BRAND.name,
+  openGraph: { siteName: BRAND.name, type: 'website', images: ['/og-default.png'] },
+  twitter: { card: 'summary_large_image' },
 }
 
 export const viewport: Viewport = {

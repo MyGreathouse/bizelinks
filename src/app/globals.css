@@ -118,3 +118,180 @@
   .shell { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
   @media (min-width: 768px) { .shell { padding-inline: 2rem; } }
 }
+
+/* ============================================================================
+   Public pages (bizelinks.com/username). Every colour comes from the --p-*
+   variables set by pageStyle() in src/lib/theme.ts, so a theme is data, not CSS.
+   Hierarchy is carried by size and fill: the lead Spotlight item is the only
+   solid block of accent on the page; everything else steps down from it.
+   ========================================================================= */
+@layer components {
+  .bl-page {
+    min-height: 100dvh;
+    background: var(--p-bg);
+    color: var(--p-text);
+    display: flex;
+    flex-direction: column;
+  }
+  .bl-page :focus-visible { outline: 3px solid var(--p-accent); outline-offset: 3px; }
+  .bl-page ::selection { background: color-mix(in srgb, var(--p-accent) 25%, transparent); }
+  .bl-col { width: 100%; max-width: 34rem; margin-inline: auto; padding-inline: 1.25rem; }
+
+  /* Top bar */
+  .bl-topbar { display: flex; justify-content: flex-end; padding-block: 0.875rem; }
+
+  /* Profile header */
+  .bl-avatar {
+    width: 88px; height: 88px; border-radius: 999px; object-fit: cover;
+    background: color-mix(in srgb, var(--p-accent) 14%, var(--p-surface));
+    color: var(--p-text); display: grid; place-items: center;
+    font-family: var(--p-display); font-size: 1.75rem; font-weight: 600; letter-spacing: 0.02em;
+    border: 1px solid var(--p-line);
+  }
+  .bl-name {
+    font-family: var(--p-display); font-weight: 600; letter-spacing: -0.02em;
+    font-size: clamp(1.9rem, 7vw, 2.4rem); line-height: 1.08; margin-top: 1.125rem;
+  }
+  .bl-descriptor { margin-top: 0.375rem; color: var(--p-muted); font-weight: 500; }
+  .bl-bio { margin-top: 0.875rem; max-width: 42ch; line-height: 1.6; }
+  .bl-location { margin-top: 0.625rem; font-size: var(--text-sm); color: var(--p-muted); display: flex; align-items: center; gap: 0.375rem; }
+
+  /* Social chips */
+  .bl-socials { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .bl-chip {
+    display: inline-flex; align-items: center; min-height: 36px; padding: 0 0.875rem;
+    border-radius: 999px; border: 1px solid var(--p-line); background: var(--p-surface);
+    font-size: var(--text-sm); font-weight: 600; color: var(--p-text);
+    transition: border-color 120ms ease;
+  }
+  .bl-chip:hover { border-color: var(--p-text); }
+
+  /* Spotlight */
+  .bl-spotlight { margin-top: 2rem; display: grid; gap: 0.75rem; }
+  .bl-lead {
+    position: relative; display: block; border-radius: var(--radius-spotlight);
+    background: var(--p-accent); color: var(--p-on-accent);
+    padding: 1.5rem 1.5rem 1.375rem; overflow: hidden;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 18px 36px -22px color-mix(in srgb, var(--p-accent) 70%, black);
+  }
+  .bl-lead-title {
+    font-family: var(--p-display); font-weight: 600; letter-spacing: -0.015em;
+    font-size: clamp(1.5rem, 6vw, 1.85rem); line-height: 1.12; max-width: 20ch;
+  }
+  .bl-lead-desc { margin-top: 0.5rem; opacity: 0.92; max-width: 40ch; line-height: 1.5; }
+  .bl-lead-cta {
+    margin-top: 1.25rem; display: inline-flex; align-items: center; min-height: 44px; padding: 0 1.25rem;
+    border-radius: 999px; background: var(--p-on-accent); color: var(--p-accent); font-weight: 700; font-size: var(--text-sm);
+  }
+  .bl-lead:hover .bl-lead-cta { text-decoration: underline; text-underline-offset: 3px; }
+  /* The clip: the same tab as the BizeLinks mark, pinning the lead item. */
+  .bl-lead::after {
+    content: ''; position: absolute; top: 0; right: 1.5rem; width: 1.25rem; height: 0.625rem;
+    border-radius: 0 0 6px 6px; background: var(--p-on-accent); opacity: 0.85;
+  }
+
+  .bl-pin {
+    position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    min-height: 64px; padding: 0.875rem 1.125rem; border-radius: 18px;
+    background: var(--p-surface); color: var(--p-text);
+    border: 1.5px solid color-mix(in srgb, var(--p-accent) 55%, var(--p-line));
+    transition: border-color 120ms ease;
+  }
+  .bl-pin:hover { border-color: var(--p-accent); }
+  .bl-pin-title { font-weight: 650; line-height: 1.3; }
+  .bl-pin-desc { font-size: var(--text-sm); color: var(--p-muted); margin-top: 0.125rem; line-height: 1.45; }
+  .bl-pin-cta { flex-shrink: 0; font-size: var(--text-sm); font-weight: 700; color: var(--p-text);
+    border-bottom: 2px solid var(--p-accent); padding-bottom: 1px; white-space: nowrap; }
+
+  .bl-badge {
+    display: inline-block; margin-bottom: 0.625rem; padding: 0.1875rem 0.5625rem; border-radius: 6px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em;
+    background: var(--p-on-accent); color: var(--p-accent);
+  }
+  .bl-badge-quiet { margin: 0 0 0.25rem; background: color-mix(in srgb, var(--p-accent) 14%, var(--p-surface)); color: var(--p-text); }
+
+  /* Products */
+  .bl-section { margin-top: 2.5rem; }
+  .bl-section-title { font-family: var(--p-display); font-size: var(--text-lg); font-weight: 600; margin-bottom: 0.875rem; }
+  .bl-products { display: grid; gap: 0.75rem; }
+  .bl-product {
+    display: grid; grid-template-columns: 84px 1fr; gap: 1rem; align-items: start;
+    padding: 0.875rem; border-radius: var(--radius-card);
+    background: var(--p-surface); border: 1px solid var(--p-line); color: var(--p-text);
+    transition: border-color 120ms ease;
+  }
+  .bl-product:hover { border-color: var(--p-muted); }
+  .bl-thumb {
+    width: 84px; height: 84px; border-radius: 12px; object-fit: cover;
+    display: grid; place-items: center; text-align: center; padding: 0.375rem;
+    background: color-mix(in srgb, var(--p-accent) 13%, var(--p-surface));
+    font-family: var(--p-display); font-weight: 600; font-size: 0.8125rem; line-height: 1.15; color: var(--p-text);
+    overflow: hidden;
+  }
+  .bl-product-title { font-weight: 650; line-height: 1.3; }
+  .bl-product-desc { font-size: var(--text-sm); color: var(--p-muted); margin-top: 0.25rem; line-height: 1.45; }
+  .bl-product-foot { margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+  .bl-price { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bl-product-cta {
+    display: inline-flex; align-items: center; min-height: 36px; padding: 0 0.875rem; border-radius: 999px;
+    background: var(--p-accent); color: var(--p-on-accent); font-size: var(--text-sm); font-weight: 700;
+  }
+
+  /* Links */
+  .bl-links { display: grid; gap: 0.5rem; }
+  .bl-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    min-height: 56px; padding: 0.75rem 1rem; border-radius: var(--radius-row);
+    background: var(--p-surface); border: 1px solid var(--p-line); color: var(--p-text);
+    transition: border-color 120ms ease;
+  }
+  .bl-link:hover { border-color: var(--p-muted); }
+  .bl-link-title { font-weight: 600; line-height: 1.3; }
+  .bl-link-host { flex-shrink: 0; font-size: var(--text-xs); color: var(--p-muted); max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .bl-empty { margin-top: 2rem; padding: 1.25rem; border-radius: var(--radius-card); border: 1px dashed var(--p-line); color: var(--p-muted); }
+
+  /* Footer */
+  .bl-foot { margin-top: auto; padding-block: 2.5rem 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; font-size: var(--text-sm); color: var(--p-muted); }
+  .bl-foot a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--p-line); }
+  .bl-foot a:hover { color: var(--p-text); text-decoration-color: currentColor; }
+  .bl-made { font-weight: 600; text-decoration: none !important; display: inline-flex; align-items: center; gap: 0.5rem; }
+
+  /* Share panel (a native <details>, so it opens without JavaScript) */
+  .bl-share { position: relative; }
+  .bl-share > summary {
+    list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.375rem;
+    min-height: 40px; padding: 0 0.875rem; border-radius: 999px;
+    background: var(--p-surface); border: 1px solid var(--p-line); color: var(--p-text);
+    font-size: var(--text-sm); font-weight: 600;
+  }
+  .bl-share > summary::-webkit-details-marker { display: none; }
+  .bl-share[open] > summary { border-color: var(--p-text); }
+  .bl-share-panel {
+    position: absolute; right: 0; top: calc(100% + 0.5rem); z-index: 10; width: min(19rem, calc(100vw - 2.5rem));
+    padding: 1rem; border-radius: var(--radius-card); background: var(--p-surface); color: var(--p-text);
+    border: 1px solid var(--p-line); box-shadow: 0 16px 40px -16px rgb(0 0 0 / 0.35);
+  }
+  .bl-share-url { font-weight: 600; word-break: break-all; }
+  .bl-share-actions { margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .bl-share-btn {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.875rem; border-radius: 999px;
+    border: 1px solid var(--p-line); background: var(--p-bg); color: var(--p-text); font-size: var(--text-sm); font-weight: 600; cursor: pointer;
+  }
+  .bl-share-btn:hover { border-color: var(--p-text); }
+  .bl-qr { margin-top: 1rem; display: grid; grid-template-columns: 96px 1fr; gap: 0.875rem; align-items: center; }
+  .bl-qr img { width: 96px; height: 96px; border-radius: 8px; border: 1px solid var(--p-line); background: #fff; }
+  .bl-qr p { font-size: var(--text-sm); color: var(--p-muted); line-height: 1.45; }
+  .bl-qr a { font-weight: 600; color: var(--p-text); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Example-page strip: always in house colours, outside the user's theme */
+  .bl-example {
+    background: var(--color-ink); color: #fff; font-size: var(--text-sm);
+  }
+  .bl-example a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (min-width: 640px) {
+    .bl-col { padding-inline: 1.5rem; }
+    .bl-lead { padding: 1.75rem 1.75rem 1.5rem; }
+  }
+}

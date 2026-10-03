@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { THEMES, THEME_IDS, checkAccent, contrastRatio, resolveAccent, textOn } from './theme'
+import { THEMES, THEME_IDS, checkAccent, contrastRatio, pageStyle, resolveAccent, textOn } from './theme'
 
 describe('contrast maths', () => {
   it('matches known WCAG values', () => {
@@ -42,5 +42,16 @@ describe('accent safety', () => {
     expect(resolveAccent('#FFF3B0', 'studio')).toBe(THEMES.studio.defaultAccent)
     expect(resolveAccent(null, 'ink')).toBe(THEMES.ink.defaultAccent)
     expect(resolveAccent('#c8421a', 'paper')).toBe('#C8421A')
+  })
+})
+
+describe('pageStyle', () => {
+  it('falls back to the theme accent when the saved accent is unreadable', () => {
+    const style = pageStyle('paper', '#FAF8F5')
+    expect(style['--p-accent']).toBe(THEMES.paper.defaultAccent)
+  })
+  it.each(THEME_IDS)('text on the accent is readable in %s', (id) => {
+    const style = pageStyle(id, null)
+    expect(contrastRatio(style['--p-accent']!, style['--p-on-accent']!)).toBeGreaterThanOrEqual(4.5)
   })
 })

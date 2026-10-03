@@ -1,3 +1,5 @@
+import { BRAND } from '@/lib/brand'
+
 /**
  * The core action of the product, shown as the address people will share.
  * A plain HTML form (GET → /login) so it works before any JavaScript loads.
@@ -31,7 +33,7 @@ export function ClaimBar({ size = 'lg' }: { size?: 'lg' | 'md' }) {
           />
         </div>
         <button type="submit" className="btn btn-primary h-12 px-6 text-base">
-          Claim your page
+          Create your {BRAND.name}
         </button>
       </div>
     </form>

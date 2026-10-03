@@ -61,9 +61,20 @@ insert into public.page_items (profile_id, zone, title, url) values
   (auth.uid(), 'links', 'Website', 'https://example.com');
 select pg_temp.check(true, 'user can add own items');
 
+insert into public.page_items (profile_id, zone, title, url, badge) values
+  (auth.uid(), 'spotlight', 'Second', 'https://example.com/2', 'new'),
+  (auth.uid(), 'spotlight', 'Third',  'https://example.com/3', null);
+select pg_temp.check(true, 'spotlight holds up to 3 items');
 select pg_temp.expect_error(
-  $$insert into public.page_items (profile_id, zone, title, url) values (auth.uid(), 'spotlight', 'Second', 'https://example.com/2')$$,
-  'only one spotlight per page');
+  $$insert into public.page_items (profile_id, zone, title, url) values (auth.uid(), 'spotlight', 'Fourth', 'https://example.com/4')$$,
+  'spotlight is capped at 3');
+select pg_temp.expect_error(
+  $$insert into public.page_items (profile_id, zone, title, url, badge) values (auth.uid(), 'links', 'Bad badge', 'https://example.com', 'FREE MONEY')$$,
+  'badges come from a fixed list');
+select pg_temp.expect_error(
+  $$insert into public.page_items (profile_id, zone, title, url) values (auth.uid(), 'featured', 'Old zone', 'https://example.com')$$,
+  'the retired featured zone is rejected');
+delete from public.page_items where profile_id = auth.uid() and zone = 'spotlight' and title in ('Second', 'Third');
 select pg_temp.expect_error(
   $$insert into public.page_items (profile_id, title, url) values (auth.uid(), 'Bad', 'javascript:alert(1)')$$,
   'javascript: URLs are rejected');
@@ -74,12 +85,37 @@ select pg_temp.expect_error(
   $$insert into public.page_items (profile_id, title, url) values (auth.uid(), '   ', 'https://example.com')$$,
   'blank titles are rejected');
 
-insert into public.page_items (profile_id, zone, title, url)
-  select auth.uid(), 'featured', 'Card ' || g, 'https://example.com/' || g from generate_series(1, 6) g;
+insert into public.page_items (profile_id, zone, kind, title, url, price_label)
+  select auth.uid(), 'products', 'product', 'Product ' || g, 'https://example.com/p' || g, '£' || g || '.99'
+    from generate_series(1, 12) g;
 select pg_temp.expect_error(
-  $$insert into public.page_items (profile_id, zone, title, url) values (auth.uid(), 'featured', 'Seventh', 'https://example.com/7')$$,
-  'featured cards are capped at 6');
-delete from public.page_items where profile_id = auth.uid() and zone = 'featured';
+  $$insert into public.page_items (profile_id, zone, title, url) values (auth.uid(), 'products', 'Thirteenth', 'https://example.com/13')$$,
+  'products are capped at 12');
+select pg_temp.expect_error(
+  $$update public.page_items set price_label = 'This price label is far too long' where profile_id = auth.uid() and zone = 'products'$$,
+  'price labels are capped at 20 characters');
+delete from public.page_items where profile_id = auth.uid() and zone = 'products';
+
+-- Social profiles
+insert into public.social_links (profile_id, provider, url, position) values
+  (auth.uid(), 'instagram', 'https://instagram.com/ada', 0),
+  (auth.uid(), 'email', 'mailto:ada@example.com', 1);
+select pg_temp.check(true, 'user can add own social links');
+select pg_temp.expect_error(
+  $$insert into public.social_links (profile_id, provider, url) values (auth.uid(), 'instagram', 'https://instagram.com/ada2')$$,
+  'one link per social platform');
+select pg_temp.expect_error(
+  $$insert into public.social_links (profile_id, provider, url) values (auth.uid(), 'youtube', 'javascript:alert(1)')$$,
+  'social links must be web addresses');
+select pg_temp.expect_error(
+  $$insert into public.social_links (profile_id, provider, url) values (auth.uid(), 'website', 'mailto:ada@example.com')$$,
+  'mailto is only allowed for the email platform');
+select pg_temp.expect_error(
+  $$insert into public.social_links (profile_id, provider, url) values (auth.uid(), 'myspace', 'https://myspace.com/ada')$$,
+  'unknown social platforms are rejected');
+select pg_temp.expect_error($$update public.profiles set entity_type = 'robot' where id = auth.uid()$$,
+  'entity type comes from a fixed list');
+update public.profiles set descriptor = 'Mathematician and writer' where id = auth.uid();
 
 -- Direct writes to analytics are blocked
 select pg_temp.expect_error(
@@ -101,6 +137,12 @@ select pg_temp.check((select count(*) = 0 from public.profiles where username = 
   'user cannot read another user''s profile row');
 select pg_temp.check((select count(*) = 0 from public.page_items where profile_id = '11111111-1111-1111-1111-111111111111'),
   'user cannot read another user''s items');
+select pg_temp.check((select count(*) = 0 from public.social_links where profile_id = '11111111-1111-1111-1111-111111111111'),
+  'user cannot read another user''s social links');
+update public.social_links set url = 'https://evil.example' where profile_id = '11111111-1111-1111-1111-111111111111';
+select pg_temp.expect_error(
+  $$insert into public.social_links (profile_id, provider, url) values ('11111111-1111-1111-1111-111111111111', 'tiktok', 'https://spam.example')$$,
+  'user cannot add social links to another user''s page');
 
 update public.profiles set bio = 'hacked' where id = '11111111-1111-1111-1111-111111111111';
 update public.page_items set url = 'https://evil.example' where profile_id = '11111111-1111-1111-1111-111111111111';
@@ -126,6 +168,14 @@ select pg_temp.expect_error($$select * from public.page_reports$$, 'visitors can
 
 select pg_temp.check((public.get_public_page('ada') ->> 'display_name') = 'Ada Lovelace', 'published page is public');
 select pg_temp.check(not (public.get_public_page('ada') ? 'is_suspended'), 'private fields are not exposed');
+select pg_temp.expect_error($$select * from public.social_links$$, 'visitors cannot read the social links table');
+select pg_temp.check((public.get_public_page('ada') ->> 'descriptor') = 'Mathematician and writer', 'descriptor is public');
+select pg_temp.check(jsonb_array_length(public.get_public_page('ada') -> 'socials') = 2, 'social links are public');
+select pg_temp.check((public.get_public_page('ada') -> 'socials' -> 0 ->> 'url') = 'https://instagram.com/ada',
+  'another user''s social update had no effect');
+select pg_temp.check((select count(*) = 1 from public.list_indexable_pages() where username = 'ada'), 'indexable page is in the sitemap list');
+select pg_temp.check((select count(*) = 0 from public.list_indexable_pages() where username = 'ben'), 'unpublished page is not in the sitemap list');
+select pg_temp.check(public.username_status('example') = 'reserved', 'new route names are reserved');
 select pg_temp.check(public.get_public_page('ben') is null, 'Ben''s unpublished page stays hidden');
 select pg_temp.check(public.username_status('ada') = 'taken', 'username_status: taken');
 select pg_temp.check(public.username_status('login') = 'reserved', 'username_status: reserved');
