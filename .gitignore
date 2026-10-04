@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Builds
+.next/
+.open-next/
+out/
+.wrangler/
+*.tsbuildinfo
+
+# Secrets and local settings — never commit these
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# Logs and OS files
+npm-debug.log*
+.DS_Store
+Thumbs.db
